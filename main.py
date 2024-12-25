@@ -3,10 +3,15 @@ from src.common.constants import GameConfig
 from src.common.enums import GameMode
 from src.ui.setup import get_game_settings
 from src.ui.game_canvas import GameCanvas
+from src.utils.debug import DebugLogger
 
 def main():
-    # Get game settings
-    mode, strategy1, strategy2 = get_game_settings()
+    # Get game settings including debug mode
+    mode, strategy1, strategy2, enable_debug = get_game_settings()
+    
+    # Initialize debug logger
+    debug = DebugLogger(enable_debug)
+    debug.log("Game started")
     
     # Create window
     root = tk.Tk()
@@ -23,8 +28,7 @@ def main():
     root.geometry(f'{config.WINDOW_WIDTH}x{config.WINDOW_HEIGHT}+{x}+{y}')
     
     # Create game instance with debug mode
-    # Set enable_debug=True to enable logging
-    game = GameCanvas(root, mode, config, strategy1, strategy2)
+    game = GameCanvas(root, mode, config, strategy1, strategy2, debug)
     game.pack(expand=True, fill='both')
     
     # Add control instructions
@@ -42,11 +46,14 @@ def main():
     controls.pack(side='bottom')
     
     def on_closing():
-        game.debug.close()  # Close debug log file
+        debug.log("Game closing")
+        debug.close()
         root.destroy()
     
     root.protocol("WM_DELETE_WINDOW", on_closing)
+    debug.log("Starting main game loop")
     root.mainloop()
 
 if __name__ == "__main__":
     main()
+
