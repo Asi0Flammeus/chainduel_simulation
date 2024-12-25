@@ -6,6 +6,7 @@ import random
 from src.utils.debug import DebugLogger
 from src.common.enums import GameMode, Direction
 from src.common.types import GameState
+from src.common.constants import GameConfig
 
 Position = Tuple[int, int]
 DirectionVector = Tuple[int, int]
@@ -29,16 +30,19 @@ class GameCanvas(tk.Canvas):
     def __init__(self, 
                  master: tk.Tk,
                  mode: GameMode,
-                 config: Any,
-                 strategy1: Optional[Any],
-                 strategy2: Optional[Any],
+                 config: GameConfig = None,
+                 strategy1: Optional[Any] = None,
+                 strategy2: Optional[Any] = None,
                  debug: Optional[DebugLogger] = None) -> None:
         """Initialize the game canvas and state."""
+        # Use provided config or create a default one
+        self.config = config or GameConfig()
+        
         super().__init__(
             master,
-            width=config.WINDOW_WIDTH,
-            height=config.WINDOW_HEIGHT,
-            bg='black',
+            width=self.config.WINDOW_WIDTH,
+            height=self.config.WINDOW_HEIGHT,
+            bg=self.config.BACKGROUND_COLOR,
             highlightthickness=0
         )
         
@@ -47,11 +51,12 @@ class GameCanvas(tk.Canvas):
         self.strategy1 = strategy1
         self.strategy2 = strategy2
         
-        self.width = config.WINDOW_WIDTH
-        self.height = config.WINDOW_HEIGHT
-        self.cell_size = config.GRID_SIZE
-        self.grid_width = self.width // self.cell_size
-        self.grid_height = self.height // self.cell_size
+        # Use explicit grid dimensions from config
+        self.width = self.config.WINDOW_WIDTH
+        self.height = self.config.WINDOW_HEIGHT
+        self.cell_size = self.config.GRID_SIZE
+        self.grid_width = self.config.GRID_WIDTH  # 51
+        self.grid_height = self.config.GRID_HEIGHT  # 25
         
         self.score1 = 0
         self.score2 = 0
@@ -63,6 +68,9 @@ class GameCanvas(tk.Canvas):
             'Right': (1, 0)
         }
         
+        # Flag to track first food placement
+        self._first_food = True
+        
         self.reset_positions()
         
         self.debug.log("Game canvas initialized")
@@ -70,21 +78,40 @@ class GameCanvas(tk.Canvas):
         self.update_game()
     
     def _place_food(self) -> Position:
-        """Generate new random food position not overlapping with snakes."""
+        """Generate food position, with first food at grid center."""
+        if self._first_food:
+            # Calculate the center of the grid
+            x = self.grid_width // 2
+            y = self.grid_height // 2
+            
+            # Ensure food is not on the snakes
+            while (x, y) in self.snake1 or (x, y) in self.snake2:
+                # If center is occupied, use a nearby random position
+                x = random.randint(max(0, x-1), min(self.grid_width-1, x+1))
+                y = random.randint(max(0, y-1), min(self.grid_height-1, y+1))
+            
+            self._first_food = False
+            self.debug.log(f"Placed first food at central position: ({x}, {y})")
+            return (x, y)
+        
+        # Subsequent food placements are random
         while True:
             x = random.randint(0, self.grid_width - 1)
             y = random.randint(0, self.grid_height - 1)
             if (x, y) not in self.snake1 and (x, y) not in self.snake2:
-                self.debug.log(f"Placed food at position: ({x}, {y})")
+                self.debug.log(f"Placed food at random position: ({x}, {y})")
                 return (x, y)
     
     def reset_positions(self) -> None:
         """Reset snake positions and place food randomly for next point."""
         self.debug.log("Resetting positions for next point")
-        # Reset snake positions but maintain current lengths
-        # Extend bodies to the left/right of starting positions based on current lengths
-        self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]  # Start with length 2
-        self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]  # Start with length 2
+        # Position snakes at opposite ends of the grid
+        self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]  # Start with length 2 on left side
+        self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]  # Start with length 2 on right side
+        
+        # Reset first food flag when resetting positions
+        self._first_food = True
+        
         self.food_pos = self._place_food()
         self.direction1 = 'Right'
         self.direction2 = 'Left'
@@ -242,14 +269,14 @@ class GameCanvas(tk.Canvas):
         
         # Draw grid
         for i in range(0, self.width + 1, self.cell_size):
-            self.create_line(i, 0, i, self.height, fill='#333333')
+            self.create_line(i, 0, i, self.height, fill=self.config.GRID_COLOR)
         for i in range(0, self.height + 1, self.cell_size):
-            self.create_line(0, i, self.width, i, fill='#333333')
+            self.create_line(0, i, self.width, i, fill=self.config.GRID_COLOR)
         
         # Draw snakes with darker heads
         for snake_positions, head_color, base_color in [
-            (self.snake1, '#2ecc71', '#164a29'),  # Green snake with darker green head
-            (self.snake2, '#e67e22', '#a65602')   # Orange snake with darker orange head
+            (self.snake1, self.config.SNAKE1_COLOR, '#164a29'),  # Green snake with darker green head
+            (self.snake2, self.config.SNAKE2_COLOR, '#a65602')   # Orange snake with darker orange head
         ]:
             # Draw body
             for x, y in snake_positions[1:]:
@@ -272,19 +299,19 @@ class GameCanvas(tk.Canvas):
         self.create_oval(
             food_x * self.cell_size + 2, food_y * self.cell_size + 2,
             (food_x + 1) * self.cell_size - 2, (food_y + 1) * self.cell_size - 2,
-            fill='yellow'
+            fill=self.config.FOOD_COLOR
         )
         
         # Draw scores
         self.create_text(
             50, 20,
             text=f'Green: {self.score1}',
-            fill='#2ecc71',
-            font=('Arial', 16, 'bold')
+            fill=self.config.SNAKE1_COLOR,
+            font=self.config.SCORE_FONT
         )
         self.create_text(
             self.width - 50, 20,
             text=f'Orange: {self.score2}',
-            fill='#e67e22',
-            font=('Arial', 16, 'bold')
+            fill=self.config.SNAKE2_COLOR,
+            font=self.config.SCORE_FONT
         )

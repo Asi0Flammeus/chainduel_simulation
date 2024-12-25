@@ -3,13 +3,13 @@ from dataclasses import dataclass
 @dataclass
 class GameConfig:
     # Window settings
-    WINDOW_WIDTH: int = 800
-    WINDOW_HEIGHT: int = 600
+    WINDOW_WIDTH: int = 1020  # 51 * 20
+    WINDOW_HEIGHT: int = 500  # 25 * 20
     GRID_SIZE: int = 20
     
     # Game settings
     FPS: int = 15
-    INITIAL_SNAKE_LENGTH: int = 3
+    INITIAL_SNAKE_LENGTH: int = 2
     
     # Colors
     GRID_COLOR: str = '#333333'
@@ -25,8 +25,8 @@ class GameConfig:
     
     @property
     def GRID_WIDTH(self) -> int:
-        return self.WINDOW_WIDTH // self.GRID_SIZE
+        return 51  # Explicitly set to 51
     
     @property
     def GRID_HEIGHT(self) -> int:
-        return self.WINDOW_HEIGHT // self.GRID_SIZE
+        return 25  # Explicitly set to 25
