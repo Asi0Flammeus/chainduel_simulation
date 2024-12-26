@@ -4,40 +4,39 @@ A Python simulation model for analyzing AI strategies in Chain Duel, inspired by
 
 ## Introduction
 
-This project simulates snake-like AI duels where two agents compete for food while avoiding collisions. The simulation helps analyze different competitive strategies and their effectiveness in a controlled environment.
+This project offers three modes for snake-like duels:
+- Interactive mode with grid display:
+  - Play against AI (use arrow keys)
+  - Watch two AIs compete
+- Simulation mode for batch analysis
 
 ## Setup (Ubuntu)
 
 ```bash
 # Create and activate virtual environment
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv env
+source env/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-Requirements (`requirements.txt`):
-```
-tk
-tqdm
-```
-
 ## Usage
 
-Run the simulation:
+Start the game:
 ```bash
 python main.py
 ```
 
-Choose from three modes:
-- Player vs AI
-- AI vs AI
-- Simulation (batch runs with statistics)
+### Interactive Modes
+- **Player vs AI**: Control green snake with arrow keys while AI controls orange
+- **AI vs AI**: Watch two AI strategies compete in real-time
+- Controls: R to restart, ESC to quit
 
-Simulation results are saved in `simulations/sim_TIMESTAMP/`:
-- `results.txt`: Game-by-game data
-- `stats.txt`: Aggregated statistics
+### Simulation Mode
+Runs multiple games without visualization for statistical analysis. Results saved in `simulations/sim_TIMESTAMP/`:
+- `results.txt`: Detailed game data
+- `stats.txt`: Performance metrics
 
 ## Project Structure
 
