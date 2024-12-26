@@ -1,17 +1,75 @@
-# Simulation Model of Chain-Duel
+# Chain Duel Simulation
 
-Minimalistic model of chain-duel to analyse several strategies 
+A Python simulation model for analyzing AI strategies in Chain Duel, inspired by [Chain Duel Online](https://chainduel.net/).
 
-# Various notes
+## Introduction
 
-- enhance scoring model
-    - does removing points to opponent when food is gained for 1st food change something?
-    - get scoring system and implement it
-- rewrite AI strategy
-    - player 1 always goes straight to 1st food
-    - player 2 does a hairpin for 1st food
-    - strat: minimal avoidance + pure seek food
-    - start: adapt behavior if can't get food for sure
-        - variant 1: goes to the center 
-        - variant 2: goes the opposite of the board (other half)
-        - variant 3: goes to the less visited quadrant (based on last 3 food positions)
+This project simulates snake-like AI duels where two agents compete for food while avoiding collisions. The simulation helps analyze different competitive strategies and their effectiveness in a controlled environment.
+
+## Setup (Ubuntu)
+
+```bash
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+Requirements (`requirements.txt`):
+```
+tk
+tqdm
+```
+
+## Usage
+
+Run the simulation:
+```bash
+python main.py
+```
+
+Choose from three modes:
+- Player vs AI
+- AI vs AI
+- Simulation (batch runs with statistics)
+
+Simulation results are saved in `simulations/sim_TIMESTAMP/`:
+- `results.txt`: Game-by-game data
+- `stats.txt`: Aggregated statistics
+
+## Project Structure
+
+```
+├── main.py          # Main entry point
+├── src/
+│   ├── core/        # Game mechanics
+│   ├── strategies/  # AI implementations
+│   ├── ui/         # Game interface
+│   └── simulation/ # Batch simulation
+```
+
+## TODO
+
+### Scoring System
+- [ ] Evaluate point deduction on first food collection
+- [ ] Implement competitive scoring mechanics
+- [ ] Add multiplication factors based on snake length
+
+### AI Strategy Improvements
+- [ ] Implement direct path to first food (Player 1)
+- [ ] Add hairpin maneuver for first food (Player 2)
+- [ ] Develop minimal avoidance with food seeking
+- [ ] Food-unreachable behaviors:
+  - [ ] Center positioning
+  - [ ] Board half switching
+  - [ ] Quadrant selection (based on food history)
+
+## License
+
+MIT License - Feel free to use this code for any purpose while maintaining the license notice.
+
+## Reference
+
+Based on the Chain Duel game: https://chainduel.net/
