@@ -10,6 +10,7 @@ class GameConfig:
     # Game settings
     FPS: int = 15
     INITIAL_SNAKE_LENGTH: int = 2
+    MAX_SCORE: int = 21
     
     # Colors
     GRID_COLOR: str = '#333333'
