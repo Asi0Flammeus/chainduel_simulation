@@ -4,46 +4,36 @@ from src.common.enums import GameMode
 from src.ui.setup import get_game_settings
 from src.ui.game_canvas import GameCanvas
 from src.utils.debug import DebugLogger
+from src.simulation.runner import SimulationRunner
 
-def main():
-    # Get game settings including debug mode
-    mode, strategy1, strategy2, enable_debug = get_game_settings()
-    
-    # Initialize debug logger
-    debug = DebugLogger(enable_debug)
-    debug.log("Game started")
-    
-    # Create window
-    root = tk.Tk()
+def setup_game_window(root: tk.Tk, config: GameConfig) -> None:
     root.title("Snake Game")
-    
-    # Configure game
-    config = GameConfig()
-    
-    # Center window on screen
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
     x = (screen_width - config.WINDOW_WIDTH) // 2
     y = (screen_height - config.WINDOW_HEIGHT) // 2
     root.geometry(f'{config.WINDOW_WIDTH}x{config.WINDOW_HEIGHT}+{x}+{y}')
-    
-    # Create game instance with debug mode
+
+def create_controls_label(root: tk.Tk, mode: GameMode, config: GameConfig) -> None:
+    controls_text = "Controls: Arrow Keys (Green) | R: Restart | ESC: Quit" if mode == GameMode.PLAYER_VS_AI else "Controls: R: Restart | ESC: Quit"
+    controls = tk.Label(root, text=controls_text, bg=config.BACKGROUND_COLOR, fg=config.TEXT_COLOR)
+    controls.pack(side='bottom')
+
+def run_game_mode(mode: GameMode, strategy1, strategy2, debug_enabled: bool, num_runs: int = None) -> None:
+    if mode == GameMode.SIMULATION:
+        print("\nStarting simulation...")
+        runner = SimulationRunner(strategy1, strategy2, num_runs)
+        runner.run_simulation()
+        return
+
+    debug = DebugLogger(debug_enabled)
+    debug.log("Game started")
+    root = tk.Tk()
+    config = GameConfig()
+    setup_game_window(root, config)
     game = GameCanvas(root, mode, config, strategy1, strategy2, debug)
     game.pack(expand=True, fill='both')
-    
-    # Add control instructions
-    if mode == GameMode.PLAYER_VS_AI:
-        controls_text = "Controls: Arrow Keys (Green) | R: Restart | ESC: Quit"
-    else:
-        controls_text = "Controls: R: Restart | ESC: Quit"
-    
-    controls = tk.Label(
-        root,
-        text=controls_text,
-        bg=config.BACKGROUND_COLOR,
-        fg=config.TEXT_COLOR
-    )
-    controls.pack(side='bottom')
+    create_controls_label(root, mode, config)
     
     def on_closing():
         debug.log("Game closing")
@@ -54,6 +44,14 @@ def main():
     debug.log("Starting main game loop")
     root.mainloop()
 
+def main():
+    settings = get_game_settings()
+    if len(settings) == 5:
+        mode, strategy1, strategy2, _, num_runs = settings
+        run_game_mode(mode, strategy1, strategy2, False, num_runs)
+    else:
+        mode, strategy1, strategy2, enable_debug = settings
+        run_game_mode(mode, strategy1, strategy2, enable_debug)
+
 if __name__ == "__main__":
     main()
-

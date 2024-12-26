@@ -17,6 +17,7 @@ class Direction(Enum):
 class GameMode(Enum):
     PLAYER_VS_AI = "Player vs AI"
     AI_VS_AI = "AI vs AI"
+    SIMULATION = "Simulation"
 
 
 class Strategy(Enum):

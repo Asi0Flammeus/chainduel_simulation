@@ -4,7 +4,6 @@ Minimalistic model of chain-duel to analyse several strategies
 
 # Various notes
 
-- illegal move: up/down oscillation observed for AI 
 - enhance scoring model
     - does removing points to opponent when food is gained for 1st food change something?
     - add the multiplication factor dependant of snake's length
