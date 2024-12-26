@@ -12,21 +12,6 @@ Position = Tuple[int, int]
 DirectionVector = Tuple[int, int]
 
 class GameCanvas(tk.Canvas):
-    """A canvas widget that displays and manages the snake game.
-    
-    Handles game rendering, state management, collision detection,
-    and user input processing for a two-snake game environment.
-    
-    Attributes:
-        width (int): Canvas width in pixels
-        height (int): Canvas height in pixels
-        cell_size (int): Size of each grid cell in pixels
-        grid_width (int): Number of cells horizontally
-        grid_height (int): Number of cells vertically
-        score1 (int): Score of snake 1 (green)
-        score2 (int): Score of snake 2 (orange)
-    """
-    
     def __init__(self, 
                  master: tk.Tk,
                  mode: GameMode,
@@ -34,8 +19,6 @@ class GameCanvas(tk.Canvas):
                  strategy1: Optional[Any] = None,
                  strategy2: Optional[Any] = None,
                  debug: Optional[DebugLogger] = None) -> None:
-        """Initialize the game canvas and state."""
-        # Use provided config or create a default one
         self.config = config or GameConfig()
         
         super().__init__(
@@ -51,12 +34,11 @@ class GameCanvas(tk.Canvas):
         self.strategy1 = strategy1
         self.strategy2 = strategy2
         
-        # Use explicit grid dimensions from config
         self.width = self.config.WINDOW_WIDTH
         self.height = self.config.WINDOW_HEIGHT
         self.cell_size = self.config.GRID_SIZE
-        self.grid_width = self.config.GRID_WIDTH  # 51
-        self.grid_height = self.config.GRID_HEIGHT  # 25
+        self.grid_width = self.config.GRID_WIDTH
+        self.grid_height = self.config.GRID_HEIGHT
         
         self.score1 = 0
         self.score2 = 0
@@ -68,25 +50,21 @@ class GameCanvas(tk.Canvas):
             'Right': (1, 0)
         }
         
-        # Flag to track first food placement
         self._first_food = True
         
-        self.reset_positions()
+        self.reset_game()
         
         self.debug.log("Game canvas initialized")
         self.bind_all('<Key>', self.handle_keypress)
         self.update_game()
-    
+
     def _place_food(self) -> Position:
         """Generate food position, with first food at grid center."""
         if self._first_food:
-            # Calculate the center of the grid
             x = self.grid_width // 2
             y = self.grid_height // 2
             
-            # Ensure food is not on the snakes
             while (x, y) in self.snake1 or (x, y) in self.snake2:
-                # If center is occupied, use a nearby random position
                 x = random.randint(max(0, x-1), min(self.grid_width-1, x+1))
                 y = random.randint(max(0, y-1), min(self.grid_height-1, y+1))
             
@@ -94,30 +72,35 @@ class GameCanvas(tk.Canvas):
             self.debug.log(f"Placed first food at central position: ({x}, {y})")
             return (x, y)
         
-        # Subsequent food placements are random
         while True:
             x = random.randint(0, self.grid_width - 1)
             y = random.randint(0, self.grid_height - 1)
             if (x, y) not in self.snake1 and (x, y) not in self.snake2:
                 self.debug.log(f"Placed food at random position: ({x}, {y})")
                 return (x, y)
-    
+
+    def reset_snake_position(self, snake_id: int) -> None:
+        """Reset position of a specific snake while keeping the other snake and food unchanged."""
+        if snake_id == 1:
+            self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]  # Start with length 2 on left side
+            self.direction1 = 'Right'
+        else:
+            self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]  # Start with length 2 on right side
+            self.direction2 = 'Left'
+        self.debug.log(f"Reset position for snake {snake_id}")
+
     def reset_positions(self) -> None:
-        """Reset snake positions and place food randomly for next point."""
-        self.debug.log("Resetting positions for next point")
-        # Position snakes at opposite ends of the grid
-        self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]  # Start with length 2 on left side
-        self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]  # Start with length 2 on right side
+        """Reset both snake positions and place food."""
+        self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]
+        self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]
         
-        # Reset first food flag when resetting positions
         self._first_food = True
-        
         self.food_pos = self._place_food()
         self.direction1 = 'Right'
         self.direction2 = 'Left'
         self.last_move_time = time.time()
-        self.debug.log("Position reset complete")
-    
+        self.debug.log("All positions reset")
+
     def reset_game(self) -> None:
         """Reset entire game including scores."""
         self.debug.log("Resetting game")
@@ -125,9 +108,9 @@ class GameCanvas(tk.Canvas):
         self.score2 = 0
         self.reset_positions()
         self.debug.log("Game reset complete")
-    
+
     def handle_keypress(self, event: tk.Event) -> None:
-        """Process keyboard input for game control and snake movement."""
+        """Process keyboard input for game control."""
         key = event.keysym
         self.debug.log_key_press(key, self.direction1)
         
@@ -143,90 +126,73 @@ class GameCanvas(tk.Canvas):
             if key != opposite[self.direction1]:
                 self.direction1 = key
                 self.debug.log(f"Snake 1 direction changed to: {key}")
-    
+
     def move_snake(self, positions: List[Position], direction: str, snake_id: int) -> Tuple[bool, List[Position]]:
-        """Move snake in specified direction and handle collisions/growth."""
+        """Move snake and check for wall/self collisions."""
         dx, dy = self.directions[direction]
         new_head = (positions[0][0] + dx, positions[0][1] + dy)
         
+        # Check wall collision
         if not (0 <= new_head[0] < self.grid_width and 0 <= new_head[1] < self.grid_height):
             self.debug.log_collision("wall", new_head)
+            self.score2 += 1 if snake_id == 1 else 0
+            self.score1 += 1 if snake_id == 2 else 0
+            # Reset snake to initial position and length
             if snake_id == 1:
-                self.score2 += 1
-                self.debug.log(f"Point awarded to Snake 2 for wall collision")
+                self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]
+                self.direction1 = 'Right'
+                return False, self.snake1
             else:
-                self.score1 += 1
-                self.debug.log(f"Point awarded to Snake 1 for wall collision")
-            return False, positions
+                self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]
+                self.direction2 = 'Left'
+                return False, self.snake2
+        
+        # Check self collision
+        if new_head in positions[:-1]:
+            self.debug.log(f"Snake {snake_id} self collision")
+            self.score2 += 1 if snake_id == 1 else 0
+            self.score1 += 1 if snake_id == 2 else 0
+            self.reset_snake_position(snake_id)
+            return False, positions if snake_id == 1 else self.snake2
         
         positions.insert(0, new_head)
         if new_head == self.food_pos:
             self.debug.log(f"Snake {snake_id} collected food")
-            return True, positions  # Snake grows by keeping tail
+            return True, positions
         
-        positions.pop()  # Remove tail if not growing
+        positions.pop()
         return True, positions
-    
-    def check_collision(self) -> bool:
-        """Check for collisions between snakes and update scores accordingly.
-        
-        Returns True if any collision occurred, with points awarded based on:
-        - Self collision: Point to opponent, reset length of colliding snake
-        - Head to body collision: Point to snake whose body was hit, reset length of colliding snake
-        - Head to head collision: No points awarded, reset length of both snakes
-        """
+
+    def check_snake_collisions(self) -> bool:
+        """Check for collisions between snakes and handle consequences."""
         head1, head2 = self.snake1[0], self.snake2[0]
         collision_occurred = False
         
-        # Check head-to-head collision first
+        # Check head-to-head collision
         if head1 == head2:
-            self.debug.log("Head to head collision - resetting both snakes")
-            self.snake1 = self.snake1[:2]  # Reset to initial length
-            self.snake2 = self.snake2[:2]  # Reset to initial length
+            self.debug.log("Head to head collision - resetting both snake positions")
+            self.reset_snake_position(1)
+            self.reset_snake_position(2)
             return True
-            
-        # Check self-collisions
-        if head1 in self.snake1[1:]:
+        
+        # Check if snake 1's head hits snake 2's body
+        if head1 in self.snake2[1:]:
+            self.debug.log("Snake 1 hit Snake 2's body")
             self.score2 += 1
-            self.snake1 = self.snake1[:2]  # Reset length of snake 1
-            self.debug.log("Point awarded to Snake 2 for Snake 1 self-collision")
-            collision_occurred = True
-            
-        if head2 in self.snake2[1:]:
-            self.score1 += 1
-            self.snake2 = self.snake2[:2]  # Reset length of snake 2
-            self.debug.log("Point awarded to Snake 1 for Snake 2 self-collision")
+            self.reset_snake_position(1)
             collision_occurred = True
         
-        # Check head-to-body collisions
-        if head1 in self.snake2[1:]:  # Snake 1's head hits Snake 2's body
-            self.score2 += 1
-            self.snake1 = self.snake1[:2]  # Reset length of snake 1
-            self.debug.log("Point awarded to Snake 2 - Snake 1 hit Snake 2's body")
-            collision_occurred = True
-            
-        if head2 in self.snake1[1:]:  # Snake 2's head hits Snake 1's body
+        # Check if snake 2's head hits snake 1's body
+        if head2 in self.snake1[1:]:
+            self.debug.log("Snake 2 hit Snake 1's body")
             self.score1 += 1
-            self.snake2 = self.snake2[:2]  # Reset length of snake 2
-            self.debug.log("Point awarded to Snake 1 - Snake 2 hit Snake 1's body")
+            self.reset_snake_position(2)
             collision_occurred = True
-            
+        
         return collision_occurred
-    
-    def _get_game_state(self) -> GameState:
-        """Create current game state for AI decision making."""
-        return GameState(
-            snake1=self.snake1.copy(),
-            snake2=self.snake2.copy(),
-            food_position=self.food_pos,
-            grid_width=self.grid_width,
-            grid_height=self.grid_height,
-            score1=self.score1,
-            score2=self.score2
-        )
-    
+
     def update_game(self) -> None:
-        """Update game state and trigger redraw."""
+        """Update game state and redraw."""
         current_time = time.time()
         if current_time - self.last_move_time >= 0.1:
             if self.mode == GameMode.AI_VS_AI:
@@ -242,12 +208,14 @@ class GameCanvas(tk.Canvas):
                 next_move = self.strategy2.get_next_move(state, 2)
                 self.direction2 = next_move.name.capitalize()
 
-            valid1, self.snake1 = self.move_snake(self.snake1, self.direction1, 1)
-            valid2, self.snake2 = self.move_snake(self.snake2, self.direction2, 2)
+            # Move snakes and check individual collisions
+            _, self.snake1 = self.move_snake(self.snake1, self.direction1, 1)
+            _, self.snake2 = self.move_snake(self.snake2, self.direction2, 2)
             
-            if not valid1 or not valid2 or self.check_collision():
-                self.reset_positions()
+            # Check snake-to-snake collisions
+            self.check_snake_collisions()
             
+            # Check for food collection
             for snake_pos, snake_num in [(self.snake1[0], 1), (self.snake2[0], 2)]:
                 if snake_pos == self.food_pos:
                     if snake_num == 1:
@@ -259,12 +227,24 @@ class GameCanvas(tk.Canvas):
                     self.food_pos = self._place_food()
             
             self.last_move_time = current_time
-    
+        
         self.draw_game()
         self.after(16, self.update_game)
-    
+
+    def _get_game_state(self) -> GameState:
+        """Create current game state for AI decision making."""
+        return GameState(
+            snake1=self.snake1.copy(),
+            snake2=self.snake2.copy(),
+            food_position=self.food_pos,
+            grid_width=self.grid_width,
+            grid_height=self.grid_height,
+            score1=self.score1,
+            score2=self.score2
+        )
+
     def draw_game(self) -> None:
-        """Render current game state to the canvas."""
+        """Render current game state."""
         self.delete('all')
         
         # Draw grid
@@ -273,10 +253,10 @@ class GameCanvas(tk.Canvas):
         for i in range(0, self.height + 1, self.cell_size):
             self.create_line(0, i, self.width, i, fill=self.config.GRID_COLOR)
         
-        # Draw snakes with darker heads
+        # Draw snakes
         for snake_positions, head_color, base_color in [
-            (self.snake1, self.config.SNAKE1_COLOR, '#164a29'),  # Green snake with darker green head
-            (self.snake2, self.config.SNAKE2_COLOR, '#a65602')   # Orange snake with darker orange head
+            (self.snake1, self.config.SNAKE1_COLOR, '#164a29'),
+            (self.snake2, self.config.SNAKE2_COLOR, '#a65602')
         ]:
             # Draw body
             for x, y in snake_positions[1:]:
@@ -285,7 +265,7 @@ class GameCanvas(tk.Canvas):
                     (x + 1) * self.cell_size, (y + 1) * self.cell_size,
                     fill=base_color, outline=''
                 )
-            # Draw head (first position) in darker color
+            # Draw head
             if snake_positions:
                 x, y = snake_positions[0]
                 self.create_rectangle(
