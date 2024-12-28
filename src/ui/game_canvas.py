@@ -112,10 +112,10 @@ class GameCanvas(tk.Canvas):
             if (x, y) not in self.snake1 and (x, y) not in self.snake2:
                 return (x, y)
 
-    def move_snake(self, snake: List[Position], direction: Direction) -> List[Position]:
-        """Move a snake in the specified direction."""
+    def move_snake(self, snake: List[Position], direction: Direction) -> Tuple[List[Position], bool]:
+        """Move a snake in the specified direction. Returns (new_positions, hit_wall)"""
         if not snake:  # Safety check
-            return snake
+            return snake, False
             
         head_x, head_y = snake[0]
         dx, dy = direction.value
@@ -123,13 +123,22 @@ class GameCanvas(tk.Canvas):
         
         # Check wall collision
         if not (0 <= new_head[0] < self.grid_width and 0 <= new_head[1] < self.grid_height):
-            return snake
+            return snake, True
         
         # Check if food is collected
         if new_head == self.food_pos:
-            return [new_head] + snake  # Grow snake
+            return [new_head] + snake, False  # Grow snake
         
-        return [new_head] + snake[:-1]  # Move without growing
+        return [new_head] + snake[:-1], False  # Move without growing
+
+    def reset_snake(self, snake_id: int) -> None:
+        """Reset a snake to its starting position and initial length."""
+        if snake_id == 1:
+            self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]
+            self.direction1 = Direction.RIGHT
+        else:
+            self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]
+            self.direction2 = Direction.LEFT
 
     def check_collisions(self) -> None:
         """Check and handle all types of collisions."""
@@ -139,40 +148,27 @@ class GameCanvas(tk.Canvas):
         head1 = self.snake1[0]
         head2 = self.snake2[0]
         
-        # Wall collisions
-        if not (0 <= head1[0] < self.grid_width and 0 <= head1[1] < self.grid_height):
-            self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]
-            self.direction1 = Direction.RIGHT
-            
-        if not (0 <= head2[0] < self.grid_width and 0 <= head2[1] < self.grid_height):
-            self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]
-            self.direction2 = Direction.LEFT
+        # Wall collisions are now handled during move_snake
         
         # Self collisions
         if head1 in self.snake1[1:]:
-            self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]
-            self.direction1 = Direction.RIGHT
+            self.reset_snake(1)
             
         if head2 in self.snake2[1:]:
-            self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]
-            self.direction2 = Direction.LEFT
+            self.reset_snake(2)
         
         # Head-to-head collision
         if head1 == head2:
-            self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]
-            self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]
-            self.direction1 = Direction.RIGHT
-            self.direction2 = Direction.LEFT
+            self.reset_snake(1)
+            self.reset_snake(2)
             return
         
         # Head to body collisions
-        if head1 in self.snake2[1:]:
-            self.snake1 = [(2 - i, self.grid_height//2) for i in range(2)]
-            self.direction1 = Direction.RIGHT
+        if head1 in self.snake2:
+            self.reset_snake(1)
             
-        if head2 in self.snake1[1:]:
-            self.snake2 = [(self.grid_width-3 + i, self.grid_height//2) for i in range(2)]
-            self.direction2 = Direction.LEFT
+        if head2 in self.snake1:
+            self.reset_snake(2)
 
     def update_game(self) -> None:
         """Main game update logic."""
@@ -200,8 +196,19 @@ class GameCanvas(tk.Canvas):
                 old_len1 = len(self.snake1)
                 old_len2 = len(self.snake2)
                 
-                self.snake1 = self.move_snake(self.snake1, self.direction1)
-                self.snake2 = self.move_snake(self.snake2, self.direction2)
+                # Handle wall collisions during movement
+                new_snake1, hit_wall1 = self.move_snake(self.snake1, self.direction1)
+                new_snake2, hit_wall2 = self.move_snake(self.snake2, self.direction2)
+                
+                if hit_wall1:
+                    self.reset_snake(1)
+                else:
+                    self.snake1 = new_snake1
+                    
+                if hit_wall2:
+                    self.reset_snake(2)
+                else:
+                    self.snake2 = new_snake2
                 
                 # Handle food collection and scoring
                 if len(self.snake1) > old_len1:
