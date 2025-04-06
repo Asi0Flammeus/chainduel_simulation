@@ -5,7 +5,8 @@ from src.common.enums import GameMode
 from src.ui.setup import get_game_settings
 from src.ui.game_canvas import GameCanvas
 from src.utils.debug import DebugLogger
-from src.simulation.runner import SimulationRunner
+from src.simulation.runner import ScenarioSimulationRunner
+
 
 def setup_game_window(root: tk.Tk, config: GameConfig) -> None:
     """Setup the main game window and center it on screen."""
@@ -52,7 +53,7 @@ def run_interactive_mode(mode: GameMode, strategy1, strategy2, debug: DebugLogge
 def run_simulation_mode(strategy1, strategy2, num_runs: int) -> None:
     """Run the game in simulation mode (batch processing)."""
     print("\nStarting simulation...")
-    runner = SimulationRunner(strategy1, strategy2, num_runs)
+    runner = ScenarioSimulationRunner(strategy1, strategy2, num_runs)
     runner.run()
 
 def run_game_mode(mode: GameMode, strategy1, strategy2, debug_enabled: bool, num_runs: int = None) -> None:
