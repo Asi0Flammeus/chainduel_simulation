@@ -49,12 +49,18 @@ class ScenarioSimulationRunner:
         }
 
     def generate_snake2_positions(self) -> List[InitialPosition]:
-        """Generate the three specific starting positions for snake 2."""
+        """Generate the starting positions for snake 2, including the default."""
         center_y = self.config.GRID_HEIGHT // 2
         center_x = self.config.GRID_WIDTH // 2
         
-        # These positions match the screenshots exactly
         positions = [
+            # Default case: initial positions for both snakes
+            InitialPosition(
+                x=self.config.GRID_WIDTH - 2,
+                y=center_y,
+                direction=Direction.LEFT,
+                description="Default"
+            ),
             InitialPosition(
                 x=center_x + 2,
                 y=center_y,
@@ -82,21 +88,18 @@ class ScenarioSimulationRunner:
         center_x = self.config.GRID_WIDTH // 2
         center_y = self.config.GRID_HEIGHT // 2
         
-        # Snake 1 has just eaten first food at center
-        # Length 3, starting from center moving left
-        snake1 = [
-            (center_x, center_y),      # Head at center (just ate food)
-            (center_x-1, center_y),    # Body
-            (center_x-2, center_y)     # Tail
-        ]
-        
+        # Snake 1 initial position and length
+        snake1 = [(2 - i, center_y) for i in range(3)]  # Length 3, starting from left moving right
+
         # Snake 2 at specified position
         x2, y2 = snake2_pos.x, snake2_pos.y
-        snake2 = [
-            (x2, y2),                  # Head
-            (x2 + 1, y2)              # Tail (one segment to right since moving left)
-        ]
         
+        # Adjust snake2 length based on whether it's the default position
+        if snake2_pos.description == "Default":
+            snake2 = [(x2 + i, y2) for i in range(2)]  # Length 2, starting from right moving left
+        else:
+            snake2 = [(x2, y2), (x2 + 1, y2)]  # Head and tail for non-default positions
+
         # Create new game state
         state = GameState(
             snake1=snake1,
@@ -104,9 +107,14 @@ class ScenarioSimulationRunner:
             food_position=self._place_food(snake1, snake2),  # New random food
             grid_width=self.config.GRID_WIDTH,
             grid_height=self.config.GRID_HEIGHT,
-            score1=self.config.STARTING_SCORE + 2000,  # Adjusted for first food
-            score2=self.config.STARTING_SCORE - 2000
+            score1=self.config.STARTING_SCORE,
+            score2=self.config.STARTING_SCORE
         )
+        
+        # If it's the default case, don't adjust the score
+        if snake2_pos.description != "Default":
+            state.score1 = self.config.STARTING_SCORE + 2000  # Adjusted for first food
+            state.score2 = self.config.STARTING_SCORE - 2000
         
         return state
 
@@ -122,7 +130,7 @@ class ScenarioSimulationRunner:
         """Run a single game with specific starting conditions."""
         game_state = self.init_specific_scenario(snake2_pos)
         
-        snake1 = Snake(game_state.snake1, Direction.LEFT)  # Set initial direction
+        snake1 = Snake(game_state.snake1, Direction.RIGHT)  # Set initial direction
         snake2 = Snake(game_state.snake2, snake2_pos.direction)
         history = []
         max_steps = 1000
@@ -246,3 +254,4 @@ class ScenarioSimulationRunner:
         print(f"\nResults saved to: {self.run_dir}")
         with open(self.stats_file, 'r') as f:
             print(f.read())
+

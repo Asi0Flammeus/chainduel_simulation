@@ -1,65 +1,67 @@
-from typing import Tuple, Optional, Dict, Type
-import inspect
-from ..common.enums import GameMode
-from ..strategies.base import SnakeStrategy
-from ..strategies import ai as ai_module
+# src/ui/setup.py
+from src.common.enums import GameMode  # Assuming GameMode enum is in this file
+from src.strategies.ai import (SimpleFoodSeekingStrategy, AdaptiveSeekingStrategy,
+                          AggressiveStrategy, NoisyAdaptiveStrategy) # Import strategies
 
-def get_available_strategies() -> Dict[str, Type[SnakeStrategy]]:
-    strategies = {}
-    for name, obj in inspect.getmembers(ai_module):
-        if (inspect.isclass(obj) 
-            and issubclass(obj, SnakeStrategy) 
-            and obj != SnakeStrategy
-            and obj.__module__ == ai_module.__name__):
-            display_name = name.replace('Strategy', '')
-            strategies[display_name] = obj
-    return strategies
+def get_game_settings():
+    """Gets game settings from the user via numbered list selection."""
 
-def get_strategy_choice(player_num: int) -> SnakeStrategy:
-    strategies = get_available_strategies()
-    strategy_list = list(strategies.items())
-    
-    print(f"\nAvailable strategies for AI {player_num}:")
-    for i, (name, _) in enumerate(strategy_list, 1):
-        print(f"{i}. {name}")
-    
-    while True:
-        try:
-            choice = int(input(f"Enter your choice (1-{len(strategy_list)}): "))
-            if 1 <= choice <= len(strategy_list):
-                strategy_class = strategy_list[choice-1][1]
-                return strategy_class()
-            print(f"Invalid choice. Please enter 1-{len(strategy_list)}.")
-        except ValueError:
-            print("Invalid input. Please enter a number.")
-
-def get_game_settings() -> Tuple[GameMode, Optional[SnakeStrategy], Optional[SnakeStrategy], bool, Optional[int]]:
-    print("\nWelcome to Snake Game!")
-    
     print("\nSelect Game Mode:")
-    print("1. Player vs AI")
-    print("2. AI vs AI")
-    print("3. Simulation")
-    
+    print("1. Interactive")
+    print("2. Simulation")
+    print("3. Full Simulation")
+
     while True:
         try:
-            mode_choice = int(input("Enter your choice (1-3): "))
-            if 1 <= mode_choice <= len(GameMode):
-                mode = list(GameMode)[mode_choice-1]
+            choice = int(input("Enter the number of your choice: "))
+            if 1 <= choice <= 3:
                 break
-            print("Invalid choice. Please enter 1-3.")
+            else:
+                print("Invalid choice. Please enter a number between 1 and 3.")
         except ValueError:
             print("Invalid input. Please enter a number.")
-    
+
+    if choice == 3:  # Full Simulation
+        num_runs = input("Enter the number of simulation runs per strategy pair: ")
+        output_dir = input("Enter the output directory for the CSV file: ")
+        return ["full_simulation", num_runs, output_dir]
+
+    if choice == 1:
+        mode = GameMode.PLAYER_VS_AI # Or GameMode.AI_VS_AI if you want that as default
+    elif choice == 2:
+        mode = GameMode.SIMULATION
+
+    strategy_choices = {
+        "1": SimpleFoodSeekingStrategy,
+        "2": AdaptiveSeekingStrategy,
+        "3": AggressiveStrategy,
+        "4": NoisyAdaptiveStrategy
+    }
+
+    print("\nSelect Strategies:")
+    print("1. Simple Food Seeking")
+    print("2. Adaptive Seeking")
+    print("3. Aggressive")
+    print("4. Noisy Adaptive")
+
+    while True:
+        try:
+            strategy1_choice = input("Enter the number for Player 1's strategy: ")
+            strategy2_choice = input("Enter the number for Player 2's strategy: ")
+
+            strategy1 = strategy_choices[strategy1_choice]()
+            strategy2 = strategy_choices[strategy2_choice]()
+            break  # Exit the loop if strategy selection is successful
+        except KeyError:
+            print("Invalid strategy choice. Please enter a number between 1 and 4.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
     if mode == GameMode.SIMULATION:
-        num_runs = int(input("Enter number of simulation runs: "))
-        strategy1 = get_strategy_choice(1)
-        strategy2 = get_strategy_choice(2)
-        return mode, strategy1, strategy2, False, num_runs
-    
-    enable_debug = input("\nEnable debug mode? (y/n): ").lower() == 'y'
-    
-    if mode == GameMode.PLAYER_VS_AI:
-        return mode, None, get_strategy_choice(2), enable_debug, None
-    else:
-        return mode, get_strategy_choice(1), get_strategy_choice(2), enable_debug, None
+        num_runs = input("Enter the number of simulation runs: ")
+        return [mode, strategy1, strategy2, None, num_runs]  # 'None' for enable_debug
+    else:  # Interactive mode
+        enable_debug_str = input("Enable debug mode? (yes/no): ").lower()
+        enable_debug = enable_debug_str == "yes"
+        return [mode, strategy1, strategy2, enable_debug]
+
