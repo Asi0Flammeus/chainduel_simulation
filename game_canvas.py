@@ -5,7 +5,7 @@ import time
 import random
 from debug import DebugLogger
 from enums import GameMode, Direction
-from types import GameState
+from game_state import GameState
 from constants import GameConfig
 
 Position = Tuple[int, int]

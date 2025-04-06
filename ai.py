@@ -5,7 +5,7 @@ from typing import List, Tuple, Dict, Optional
 from collections import deque
 
 from enums import Direction
-from types import GameState
+from game_state import GameState
 from base import SnakeStrategy
 
 class MovementHistory:
@@ -260,3 +260,37 @@ class AggressiveAdaptiveStrategy(SnakeStrategy):
         best_move = max(moves.items(), key=lambda x: x[1])[0]
         self.movement_history.add_move(best_move)
         return best_move
+
+class AggressiveAdaptiveRandomStrategy(AggressiveAdaptiveStrategy):
+    """
+    An aggressive adaptive strategy with a small chance of random movement.
+    """
+
+    def __init__(self, random_move_probability: float = 0.025):
+        super().__init__()
+        self.random_move_probability = random_move_probability
+
+    def get_next_move(self, state: GameState, snake_id: int) -> Direction:
+        """
+        Determine the next move, with a chance of random movement.
+        """
+        if random.random() < self.random_move_probability:
+            # Perform a random move
+            snake = state.snake1 if snake_id == 1 else state.snake2
+            head_x, head_y = snake[0]
+            moves = get_safe_moves(state, snake_id, self.movement_history)
+
+            if not moves:
+                for direction in Direction:
+                    new_pos = predict_next_position((head_x, head_y), direction)
+                    if 0 <= new_pos[0] < state.grid_width and 0 <= new_pos[1] < state.grid_height:
+                        self.movement_history.add_move(direction)
+                        return direction
+                return random.choice(list(Direction))
+
+            return random.choice(list(moves.keys()))
+
+        # Otherwise, use the base AggressiveAdaptiveStrategy logic
+        return super().get_next_move(state, snake_id)
+
+

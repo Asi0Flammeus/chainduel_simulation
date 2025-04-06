@@ -1,11 +1,11 @@
 # main.py
 import tkinter as tk
-from src.common.constants import GameConfig
-from src.common.enums import GameMode
-from src.ui.setup import get_game_settings
-from src.ui.game_canvas import GameCanvas
-from src.utils.debug import DebugLogger
-from src.simulation.runner import SimulationRunner
+from constants import GameConfig
+from enums import GameMode
+from setup import get_game_settings
+from game_canvas import GameCanvas
+from debug import DebugLogger
+from runner import SimulationRunner
 
 def setup_game_window(root: tk.Tk, config: GameConfig) -> None:
     """Setup the main game window and center it on screen."""

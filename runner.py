@@ -3,7 +3,9 @@ import statistics
 import random
 import os
 from tqdm import tqdm
+from typing import List, Tuple, Dict, Optional
 from datetime import datetime
+
 from enums import GameMode, Direction
 from snake import Snake
 from game_state import GameState

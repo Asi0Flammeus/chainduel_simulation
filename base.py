@@ -1,7 +1,7 @@
 # src/strategies/base.py
 from abc import ABC, abstractmethod
 from enums import Direction
-from types import GameState
+from game_state import GameState
 
 class SnakeStrategy(ABC):
     """Base class for all snake movement strategies."""
