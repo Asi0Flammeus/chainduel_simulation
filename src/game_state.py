@@ -1,7 +1,7 @@
 # src/core/game_state.py
 from dataclasses import dataclass
 from typing import List, Tuple, Optional
-from ..common.enums import Direction
+from enums import Direction
 
 @dataclass
 class GameState:

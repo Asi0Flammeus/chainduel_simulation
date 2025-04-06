@@ -4,9 +4,9 @@ import math
 from typing import List, Tuple, Dict, Optional
 from collections import deque
 
-from ..common.enums import Direction
-from ..common.types import GameState
-from .base import SnakeStrategy
+from enums import Direction
+from types import GameState
+from base import SnakeStrategy
 
 class MovementHistory:
     """Tracks recent movements to prevent oscillations."""

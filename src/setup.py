@@ -1,8 +1,8 @@
 from typing import Tuple, Optional, Dict, Type
 import inspect
-from ..common.enums import GameMode
-from ..strategies.base import SnakeStrategy
-from ..strategies import ai as ai_module
+from enums import GameMode
+from base import SnakeStrategy
+import ai as ai_module
 
 def get_available_strategies() -> Dict[str, Type[SnakeStrategy]]:
     strategies = {}

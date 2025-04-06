@@ -3,10 +3,10 @@ import tkinter as tk
 from typing import Tuple, Optional, List, Dict, Any
 import time
 import random
-from src.utils.debug import DebugLogger
-from src.common.enums import GameMode, Direction
-from src.common.types import GameState
-from src.common.constants import GameConfig
+from debug import DebugLogger
+from enums import GameMode, Direction
+from types import GameState
+from constants import GameConfig
 
 Position = Tuple[int, int]
 

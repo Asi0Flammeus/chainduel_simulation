@@ -2,13 +2,13 @@ import time
 import statistics
 import random
 import os
-from typing import Tuple, List, Dict
 from tqdm import tqdm
 from datetime import datetime
-from ..common.enums import GameMode, Direction
-from ..core.snake import Snake
-from ..core.game_state import GameState
-from ..common.constants import GameConfig
+from enums import GameMode, Direction
+from snake import Snake
+from game_state import GameState
+from constants import GameConfig
+
 class SimulationRunner:
     def __init__(self, strategy1, strategy2, num_runs: int):
         self.strategy1 = strategy1

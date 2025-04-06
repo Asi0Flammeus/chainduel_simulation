@@ -1,6 +1,6 @@
 # src/core/snake.py
 from typing import List, Tuple, Optional
-from ..common.enums import Direction
+from enums import Direction
 
 class Snake:
     def __init__(self, initial_positions: List[Tuple[int, int]], initial_direction: Optional[Direction] = None):

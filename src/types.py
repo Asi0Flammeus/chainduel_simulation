@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import List, Tuple, Optional
-from .enums import Direction
 
 @dataclass
 class GameState:
