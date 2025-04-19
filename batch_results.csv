@@ -1,0 +1,65 @@
+case,strategy1,strategy2,runs,wins1,wins2,win_rate1,win_rate2,avg_score1,avg_score2,max_length1,max_length2,avg_game_length
+Classic Start,AggressiveAnticipationStrategy,AggressiveAnticipationStrategy,1000,739,261,0.739,0.261,84006.0,15994.0,7,7,173.5
+Classic Start,AggressiveAnticipationStrategy,NoisyAdaptiveAggressiveStrategy,1000,427,573,0.427,0.573,40630.0,59370.0,8,7,185.4
+Classic Start,AggressiveAnticipationStrategy,SafeFoodSeekingStrategy,1000,953,47,0.953,0.047,111292.0,-11292.0,7,7,147.2
+Classic Start,AggressiveAnticipationStrategy,SuperiorAdaptiveStrategy,1000,495,505,0.495,0.505,48630.0,51370.0,7,8,201.6
+Classic Start,NoisyAdaptiveAggressiveStrategy,AggressiveAnticipationStrategy,1000,582,418,0.582,0.418,60720.0,39280.0,8,7,185.2
+Classic Start,NoisyAdaptiveAggressiveStrategy,NoisyAdaptiveAggressiveStrategy,1000,574,426,0.574,0.426,60050.0,39950.0,8,8,173.8
+Classic Start,NoisyAdaptiveAggressiveStrategy,SafeFoodSeekingStrategy,1000,895,105,0.895,0.105,104246.0,-4246.0,7,7,150.3
+Classic Start,NoisyAdaptiveAggressiveStrategy,SuperiorAdaptiveStrategy,1000,590,410,0.590,0.410,61724.0,38276.0,7,7,182.7
+Classic Start,SafeFoodSeekingStrategy,AggressiveAnticipationStrategy,1000,42,958,0.042,0.958,-10424.0,110424.0,7,7,144.4
+Classic Start,SafeFoodSeekingStrategy,NoisyAdaptiveAggressiveStrategy,1000,124,876,0.124,0.876,-912.0,100912.0,7,7,148.7
+Classic Start,SafeFoodSeekingStrategy,SafeFoodSeekingStrategy,1000,662,338,0.662,0.338,72508.0,27492.0,7,7,203.1
+Classic Start,SafeFoodSeekingStrategy,SuperiorAdaptiveStrategy,1000,12,988,0.012,0.988,-13472.0,113472.0,7,7,167.0
+Classic Start,SuperiorAdaptiveStrategy,AggressiveAnticipationStrategy,1000,556,444,0.556,0.444,58040.0,41960.0,7,7,205.5
+Classic Start,SuperiorAdaptiveStrategy,NoisyAdaptiveAggressiveStrategy,1000,482,518,0.482,0.518,49648.0,50352.0,8,8,191.0
+Classic Start,SuperiorAdaptiveStrategy,SafeFoodSeekingStrategy,1000,964,36,0.964,0.036,110828.0,-10828.0,7,8,167.3
+Classic Start,SuperiorAdaptiveStrategy,SuperiorAdaptiveStrategy,1000,596,404,0.596,0.404,60714.0,39286.0,8,7,230.5
+"First Food Eaten; P2 at (26,13)",AggressiveAnticipationStrategy,AggressiveAnticipationStrategy,1000,801,199,0.801,0.199,84908.0,15092.0,7,7,166.4
+"First Food Eaten; P2 at (26,13)",AggressiveAnticipationStrategy,NoisyAdaptiveAggressiveStrategy,1000,747,253,0.747,0.253,76346.0,23654.0,7,7,148.2
+"First Food Eaten; P2 at (26,13)",AggressiveAnticipationStrategy,SafeFoodSeekingStrategy,1000,958,42,0.958,0.042,105550.0,-5550.0,7,7,124.2
+"First Food Eaten; P2 at (26,13)",AggressiveAnticipationStrategy,SuperiorAdaptiveStrategy,1000,726,274,0.726,0.274,74034.0,25966.0,8,8,166.1
+"First Food Eaten; P2 at (26,13)",NoisyAdaptiveAggressiveStrategy,AggressiveAnticipationStrategy,1000,656,344,0.656,0.344,64332.0,35668.0,7,8,152.2
+"First Food Eaten; P2 at (26,13)",NoisyAdaptiveAggressiveStrategy,NoisyAdaptiveAggressiveStrategy,1000,713,287,0.713,0.287,72090.0,27910.0,8,8,162.2
+"First Food Eaten; P2 at (26,13)",NoisyAdaptiveAggressiveStrategy,SafeFoodSeekingStrategy,1000,868,132,0.868,0.132,92550.0,7450.0,7,7,125.8
+"First Food Eaten; P2 at (26,13)",NoisyAdaptiveAggressiveStrategy,SuperiorAdaptiveStrategy,1000,670,330,0.670,0.330,64852.0,35148.0,8,8,157.9
+"First Food Eaten; P2 at (26,13)",SafeFoodSeekingStrategy,AggressiveAnticipationStrategy,1000,288,712,0.288,0.712,13682.0,86318.0,7,7,156.6
+"First Food Eaten; P2 at (26,13)",SafeFoodSeekingStrategy,NoisyAdaptiveAggressiveStrategy,1000,403,597,0.403,0.597,30978.0,69022.0,8,7,146.6
+"First Food Eaten; P2 at (26,13)",SafeFoodSeekingStrategy,SafeFoodSeekingStrategy,1000,841,159,0.841,0.159,89144.0,10856.0,7,7,180.4
+"First Food Eaten; P2 at (26,13)",SafeFoodSeekingStrategy,SuperiorAdaptiveStrategy,1000,199,801,0.199,0.801,1132.0,98868.0,7,7,180.9
+"First Food Eaten; P2 at (26,13)",SuperiorAdaptiveStrategy,AggressiveAnticipationStrategy,1000,711,289,0.711,0.289,71850.0,28150.0,7,7,170.1
+"First Food Eaten; P2 at (26,13)",SuperiorAdaptiveStrategy,NoisyAdaptiveAggressiveStrategy,1000,753,247,0.753,0.247,76690.0,23310.0,7,8,153.0
+"First Food Eaten; P2 at (26,13)",SuperiorAdaptiveStrategy,SafeFoodSeekingStrategy,1000,959,41,0.959,0.041,104136.0,-4136.0,7,7,153.6
+"First Food Eaten; P2 at (26,13)",SuperiorAdaptiveStrategy,SuperiorAdaptiveStrategy,1000,732,268,0.732,0.268,73446.0,26554.0,8,8,224.5
+"First Food Eaten; P2 at (27,14)",AggressiveAnticipationStrategy,AggressiveAnticipationStrategy,1000,844,156,0.844,0.156,90948.0,9052.0,7,7,158.1
+"First Food Eaten; P2 at (27,14)",AggressiveAnticipationStrategy,NoisyAdaptiveAggressiveStrategy,1000,735,265,0.735,0.265,74418.0,25582.0,8,8,148.8
+"First Food Eaten; P2 at (27,14)",AggressiveAnticipationStrategy,SafeFoodSeekingStrategy,1000,949,51,0.949,0.051,105108.0,-5108.0,7,7,124.8
+"First Food Eaten; P2 at (27,14)",AggressiveAnticipationStrategy,SuperiorAdaptiveStrategy,1000,702,298,0.702,0.298,70310.0,29690.0,7,8,171.6
+"First Food Eaten; P2 at (27,14)",NoisyAdaptiveAggressiveStrategy,AggressiveAnticipationStrategy,1000,674,326,0.674,0.326,65918.0,34082.0,7,8,151.3
+"First Food Eaten; P2 at (27,14)",NoisyAdaptiveAggressiveStrategy,NoisyAdaptiveAggressiveStrategy,1000,695,305,0.695,0.305,70164.0,29836.0,8,8,167.3
+"First Food Eaten; P2 at (27,14)",NoisyAdaptiveAggressiveStrategy,SafeFoodSeekingStrategy,1000,884,116,0.884,0.116,94900.0,5100.0,7,7,133.0
+"First Food Eaten; P2 at (27,14)",NoisyAdaptiveAggressiveStrategy,SuperiorAdaptiveStrategy,1000,667,333,0.667,0.333,65620.0,34380.0,7,7,156.1
+"First Food Eaten; P2 at (27,14)",SafeFoodSeekingStrategy,AggressiveAnticipationStrategy,1000,249,751,0.249,0.751,8984.0,91016.0,7,7,156.9
+"First Food Eaten; P2 at (27,14)",SafeFoodSeekingStrategy,NoisyAdaptiveAggressiveStrategy,1000,380,620,0.380,0.620,27012.0,72988.0,7,7,148.5
+"First Food Eaten; P2 at (27,14)",SafeFoodSeekingStrategy,SafeFoodSeekingStrategy,1000,858,142,0.858,0.142,92476.0,7524.0,7,7,188.9
+"First Food Eaten; P2 at (27,14)",SafeFoodSeekingStrategy,SuperiorAdaptiveStrategy,1000,149,851,0.149,0.851,-4526.0,104526.0,7,7,182.4
+"First Food Eaten; P2 at (27,14)",SuperiorAdaptiveStrategy,AggressiveAnticipationStrategy,1000,703,297,0.703,0.297,70004.0,29996.0,7,7,171.7
+"First Food Eaten; P2 at (27,14)",SuperiorAdaptiveStrategy,NoisyAdaptiveAggressiveStrategy,1000,757,243,0.757,0.243,78424.0,21576.0,7,7,155.4
+"First Food Eaten; P2 at (27,14)",SuperiorAdaptiveStrategy,SafeFoodSeekingStrategy,1000,964,36,0.964,0.036,104760.0,-4760.0,7,7,151.2
+"First Food Eaten; P2 at (27,14)",SuperiorAdaptiveStrategy,SuperiorAdaptiveStrategy,1000,696,304,0.696,0.304,69738.0,30262.0,8,8,199.8
+"First Food Eaten; P2 at (27,12)",AggressiveAnticipationStrategy,AggressiveAnticipationStrategy,1000,850,150,0.850,0.150,90888.0,9112.0,8,7,153.0
+"First Food Eaten; P2 at (27,12)",AggressiveAnticipationStrategy,NoisyAdaptiveAggressiveStrategy,1000,746,254,0.746,0.254,76560.0,23440.0,7,7,149.3
+"First Food Eaten; P2 at (27,12)",AggressiveAnticipationStrategy,SafeFoodSeekingStrategy,1000,948,52,0.948,0.052,104510.0,-4510.0,7,7,127.7
+"First Food Eaten; P2 at (27,12)",AggressiveAnticipationStrategy,SuperiorAdaptiveStrategy,1000,729,271,0.729,0.271,73918.0,26082.0,8,8,170.2
+"First Food Eaten; P2 at (27,12)",NoisyAdaptiveAggressiveStrategy,AggressiveAnticipationStrategy,1000,661,339,0.661,0.339,65530.0,34470.0,8,7,150.0
+"First Food Eaten; P2 at (27,12)",NoisyAdaptiveAggressiveStrategy,NoisyAdaptiveAggressiveStrategy,1000,731,269,0.731,0.269,73980.0,26020.0,8,7,162.8
+"First Food Eaten; P2 at (27,12)",NoisyAdaptiveAggressiveStrategy,SafeFoodSeekingStrategy,1000,847,153,0.847,0.153,89988.0,10012.0,7,7,127.5
+"First Food Eaten; P2 at (27,12)",NoisyAdaptiveAggressiveStrategy,SuperiorAdaptiveStrategy,1000,658,342,0.658,0.342,63308.0,36692.0,7,7,153.3
+"First Food Eaten; P2 at (27,12)",SafeFoodSeekingStrategy,AggressiveAnticipationStrategy,1000,307,693,0.307,0.693,14632.0,85368.0,7,7,154.1
+"First Food Eaten; P2 at (27,12)",SafeFoodSeekingStrategy,NoisyAdaptiveAggressiveStrategy,1000,437,563,0.437,0.563,33386.0,66614.0,7,7,150.2
+"First Food Eaten; P2 at (27,12)",SafeFoodSeekingStrategy,SafeFoodSeekingStrategy,1000,813,187,0.813,0.187,85032.0,14968.0,8,8,187.3
+"First Food Eaten; P2 at (27,12)",SafeFoodSeekingStrategy,SuperiorAdaptiveStrategy,1000,191,809,0.191,0.809,-406.0,100406.0,7,7,190.7
+"First Food Eaten; P2 at (27,12)",SuperiorAdaptiveStrategy,AggressiveAnticipationStrategy,1000,655,345,0.655,0.345,64120.0,35880.0,8,8,180.4
+"First Food Eaten; P2 at (27,12)",SuperiorAdaptiveStrategy,NoisyAdaptiveAggressiveStrategy,1000,774,226,0.774,0.226,79472.0,20528.0,8,7,156.0
+"First Food Eaten; P2 at (27,12)",SuperiorAdaptiveStrategy,SafeFoodSeekingStrategy,1000,955,45,0.955,0.045,103702.0,-3702.0,7,7,147.5
+"First Food Eaten; P2 at (27,12)",SuperiorAdaptiveStrategy,SuperiorAdaptiveStrategy,1000,695,305,0.695,0.305,70030.0,29970.0,8,8,197.1
