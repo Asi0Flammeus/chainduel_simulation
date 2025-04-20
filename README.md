@@ -38,6 +38,20 @@ Runs multiple games without visualization for statistical analysis. Results save
 - `results.txt`: Detailed game data
 - `stats.txt`: Performance metrics
 
+### Batch Analysis
+1. Run full batch simulation across all strategies and cases:
+   ```bash
+   python run_batch_simulations.py
+   ```
+   This generates `batch_results.csv` and `STRATEGIES_AND_CASES.md` in the project root.
+2. Analyze and visualize the results:
+   ```bash
+   python analyze_results.py
+   ```
+   Outputs are saved under `analysis_outputs/`:
+   - `RESULTS_SUMMARY.md`: Markdown report with tables and embedded images
+   - Heatmap PNGs per case and an overall win-rate bar chart.
+
 ## Project Structure
 
 ```
