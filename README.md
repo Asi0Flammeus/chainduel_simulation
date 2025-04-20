@@ -49,8 +49,14 @@ Runs multiple games without visualization for statistical analysis. Results save
    python analyze_results.py
    ```
    Outputs are saved under `analysis_outputs/`:
-   - `RESULTS_SUMMARY.md`: Markdown report with tables and embedded images
-   - Heatmap PNGs per case and an overall win-rate bar chart.
+   - `RESULTS_SUMMARY.md`: Markdown report with
+     - Overall average win‑rate table and bar chart
+     - Per‑case win‑rate matrices and heatmaps
+     - Strategy win‑rate comparison across the 4 initial cases (table & line chart)
+   - PNG charts:
+     - `overall_avg_win_rate.png`
+     - `heatmap_<case>.png` (one per case)
+     - `comparison_win_rate_cases.png` (strategy vs cases)
 
 ## Project Structure
 

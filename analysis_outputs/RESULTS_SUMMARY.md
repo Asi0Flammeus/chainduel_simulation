@@ -63,3 +63,14 @@
 
 ![Heatmap First Food Eaten; P2 at (27,12)](heatmap_First_Food_Eaten_P2_at_27_12.png)
 
+## Strategy Win Rate Across Cases
+
+| case                            |   AggressiveAnticipationStrategy |   NoisyAdaptiveAggressiveStrategy |   SafeFoodSeekingStrategy |   SuperiorAdaptiveStrategy |
+|:--------------------------------|---------------------------------:|----------------------------------:|--------------------------:|---------------------------:|
+| Classic Start                   |                          0.6535  |                           0.66025 |                   0.21    |                    0.6495  |
+| First Food Eaten; P2 at (26,13) |                          0.808   |                           0.72675 |                   0.43275 |                    0.78875 |
+| First Food Eaten; P2 at (27,12) |                          0.81825 |                           0.72425 |                   0.437   |                    0.76975 |
+| First Food Eaten; P2 at (27,14) |                          0.8075  |                           0.73    |                   0.409   |                    0.78    |
+
+![Win Rate Across Cases](comparison_win_rate_cases.png)
+

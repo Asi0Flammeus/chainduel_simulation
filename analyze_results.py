@@ -82,6 +82,25 @@ def main():
             plt.close(fig)
             md.write(f'![Heatmap {case}]({fname})\n\n')
 
+    # Append comparison of win rates across cases to markdown and generate a plot
+    with open(md_path, 'a') as md:
+        md.write('## Strategy Win Rate Across Cases\n\n')
+        # Average win rate of each strategy per case (averaged over opponents)
+        case_pivot = df.groupby(['case','strategy1'])['win_rate1']\
+                        .mean().unstack('strategy1')
+        md.write(case_pivot.to_markdown() + '\n\n')
+        # Plot comparison
+        fig, ax = plt.subplots(figsize=(10, 6))
+        case_pivot.plot(ax=ax, marker='o')
+        ax.set_ylabel('Average Win Rate')
+        ax.set_title('Strategy Win Rate Across Cases')
+        ax.set_ylim(0, 1)
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        cmp_file = os.path.join(outdir, 'comparison_win_rate_cases.png')
+        fig.savefig(cmp_file)
+        plt.close(fig)
+        md.write(f'![Win Rate Across Cases](comparison_win_rate_cases.png)\n\n')
     print(f"Analysis complete. Outputs in '{outdir}/' (markdown and images).")
 
 if __name__ == '__main__':
